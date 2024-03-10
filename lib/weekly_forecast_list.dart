@@ -1,9 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:weather/server.dart';
 
+import 'models.dart';
+
 
 class WeeklyForecastList extends StatelessWidget {
-  const WeeklyForecastList({super.key});
+  final WeeklyForecastDto weeklyForecast;
+
+  const WeeklyForecastList({super.key, required this.weeklyForecast});
 
   @override
   Widget build(BuildContext context) {
@@ -13,8 +17,12 @@ class WeeklyForecastList extends StatelessWidget {
     return SliverList(
       delegate: SliverChildBuilderDelegate(
             (context, index) {
-          final DailyForecast dailyForecast =
-          Server.getDailyForecastByID(index);
+              final daily = weeklyForecast.daily!;
+              final date = DateTime.parse(daily.time![index]);
+              final weatherCode = WeatherCode.fromInt(daily.weatherCode![index]);
+              final tempMax = daily.temperature2MMax![index];
+              final tempMin = daily.temperature2MMin![index];
+              final String weekday = weekdayAsString(date);
           return Card(
             child: Row(
               children: <Widget>[
@@ -35,13 +43,13 @@ class WeeklyForecastList extends StatelessWidget {
                           ),
                         ),
                         child: Image.network(
-                          dailyForecast.imageId,
+                          Server.getDailyForecastByID(index).imageId,
                           fit: BoxFit.cover,
                         ),
                       ),
                       Center(
                         child: Text(
-                          dailyForecast.getDate(currentDate.day).toString(),
+                          date.day.toString(),
                           style: textTheme.displayMedium,
                         ),
                       ),
@@ -55,11 +63,11 @@ class WeeklyForecastList extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: <Widget>[
                         Text(
-                          dailyForecast.getWeekday(currentDate.weekday),
+                          weekday,
                           style: textTheme.headlineMedium,
                         ),
                         const SizedBox(height: 10.0),
-                        Text(dailyForecast.description),
+                        Text(weatherCode.description),
                       ],
                     ),
                   ),
@@ -67,7 +75,7 @@ class WeeklyForecastList extends StatelessWidget {
                 Padding(
                   padding: const EdgeInsets.all(16.0),
                   child: Text(
-                    '${dailyForecast.highTemp} | ${dailyForecast.lowTemp} F',
+                    '$tempMax | $tempMin °C',
                     style: textTheme.titleMedium,
                   ),
                 ),
@@ -78,5 +86,17 @@ class WeeklyForecastList extends StatelessWidget {
         childCount: 7,
       ),
     );
+  }
+  String weekdayAsString(DateTime time) {
+    return switch (time.weekday) {
+      DateTime.monday => 'Monday',
+      DateTime.tuesday => 'Tuesday',
+      DateTime.wednesday => 'Wednesday',
+      DateTime.thursday => 'Thursday',
+      DateTime.friday => 'Friday',
+      DateTime.saturday => 'Saturday',
+      DateTime.sunday => 'Sunday',
+      _ => ''
+    };
   }
 }
