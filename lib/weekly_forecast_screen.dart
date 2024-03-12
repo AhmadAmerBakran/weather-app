@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:weather/weather_sliver_app_bar.dart';
 import 'package:weather/weekly_forecast_list.dart';
 
@@ -11,7 +12,7 @@ class WeeklyForecastScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       body: FutureBuilder(
-        future: FakeDataSource().getWeeklyForecast(),
+        future: context.read<DataSource>().getWeeklyForecast(),
         builder: (context, snapshot) {
           return CustomScrollView(
             slivers: <Widget>[

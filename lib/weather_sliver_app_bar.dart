@@ -1,20 +1,20 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 
 class WeatherSliverAppBar extends StatelessWidget {
   const WeatherSliverAppBar({
-    super.key,
+    super.key, this.onRefresh,
   });
+
+  final AsyncCallback? onRefresh;
 
   @override
   Widget build(BuildContext context) {
     return SliverAppBar(
       pinned: true,
       stretch: true,
-      onStretchTrigger: () async {
-        print('Load new data!');
-        // await Server.requestNewData();
-      },
+      onStretchTrigger: onRefresh,
       backgroundColor: Colors.teal[800],
       expandedHeight: 200.0,
       flexibleSpace: FlexibleSpaceBar(
