@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:weather/server.dart';
 
 
 class WeatherSliverAppBar extends StatelessWidget {
@@ -24,7 +23,7 @@ class WeatherSliverAppBar extends StatelessWidget {
           StretchMode.fadeTitle,
           StretchMode.blurBackground,
         ],
-        title: const Text('Horizons'),
+        title: const Text('EASV Weather app'),
         background: DecoratedBox(
           position: DecorationPosition.foreground,
           decoration: BoxDecoration(
@@ -34,8 +33,8 @@ class WeatherSliverAppBar extends StatelessWidget {
               colors: <Color>[Colors.teal[800]!, Colors.transparent],
             ),
           ),
-          child: Image.network(
-            headerImage,
+          child: Image.asset(
+            'assets/images/header.jpg',
             fit: BoxFit.cover,
           ),
         ),

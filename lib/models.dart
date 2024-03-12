@@ -116,52 +116,57 @@ class DailyUnits {
 // 95 * 	Thunderstorm: Slight or moderate
 // 96, 99 * 	Thunderstorm with slight and heavy hail
 enum WeatherCode {
-  clearSky(0, 'Clear sky'),
+  clearSky(0, 'Clear sky', 'assets/images/1.jpg'),
 
-  mainlyClear(1, 'Mainly clear'),
-  partlyCloudy(2, 'Partly cloudy'),
-  overcast(3, 'Overcast'),
+  mainlyClear(1, 'Mainly clear', 'assets/images/2-0.jpg'),
+  partlyCloudy(2, 'Partly cloudy', 'assets/images/2.jpg'),
+  overcast(3, 'Overcast', 'assets/images/2-2.jpg'),
 
-  fog(45, 'Fog'),
-  depositingRimeFog(48, 'Depositing rime fog'),
+  fog(45, 'Fog', 'assets/images/3-0.jpg'),
+  depositingRimeFog(48, 'Depositing rime fog', 'assets/images/3.jpg'),
 
-  drizzleLight(51, 'Drizzle: Light intensity'),
-  drizzleModerate(53, 'Drizzle: Moderate intensity'),
-  drizzleDense(55, 'Drizzle: Dense intensity'),
+  drizzleLight(51, 'Drizzle: Light intensity', 'assets/images/4-0.jpg'),
+  drizzleModerate(53, 'Drizzle: Moderate intensity', 'assets/images/4.jpg'),
+  drizzleDense(55, 'Drizzle: Dense intensity', 'assets/images/4-2.jpg'),
 
-  freezingDrizzleLight(56, 'Freezing Drizzle: Light intensity'),
-  freezingDrizzleDense(57, 'Freezing Drizzle: dense intensity'),
+  freezingDrizzleLight(56, 'Freezing Drizzle: Light intensity', 'assets/images/5.jpg'),
+  freezingDrizzleDense(57, 'Freezing Drizzle: dense intensity', 'assets/images/5-1.jpg'),
 
-  rainSlight(61, 'Rain: Slight intensity'),
-  rainModerate(63, 'Rain: Moderate intensity'),
-  rainHeavy(65, 'Rain: Heavy intensity'),
+  rainSlight(61, 'Rain: Slight intensity', 'assets/images/6-0.jpg'),
+  rainModerate(63, 'Rain: Moderate intensity', 'assets/images/6.jpg'),
+  rainHeavy(65, 'Rain: Heavy intensity', 'assets/images/6-2.jpg'),
 
-  freezingRainLight(66, 'Freezing Rain: Light intensity'),
-  freezingRainHeavy(66, 'Freezing Rain: Heavy intensity'),
+  freezingRainLight(66, 'Freezing Rain: Light intensity' , 'assets/images/7.jpg'),
+  freezingRainHeavy(66, 'Freezing Rain: Heavy intensity' , 'assets/images/7-1.jpg'),
 
-  snowFallSlight(71, 'Snow fall: Slight intensity'),
-  snowFallModerate(73, 'Snow fall: Moderate intensity'),
-  snowFallHeavy(75, 'Snow fall: Heavy intensity'),
+  snowFallSlight(71, 'Snow fall: Slight intensity' , 'assets/images/8-0.jpg'),
+  snowFallModerate(73, 'Snow fall: Moderate intensity' , 'assets/images/8.jpg'),
+  snowFallHeavy(75, 'Snow fall: Heavy intensity' , 'assets/images/8-2.jpg'),
 
-  snowGrains(77, 'Snow grains'),
+  snowGrains(77, 'Snow grains' , 'assets/images/9.jpg'),
 
-  rainShowersSlight(80, 'Rain showers: Slight'),
-  rainShowersModerate(81, 'Rain showers: Moderate'),
-  rainShowersVoilent(82, 'Rain showers: Violent'),
+  rainShowersSlight(80, 'Rain showers: Slight' , 'assets/images/10-0.jpg'),
+  rainShowersModerate(81, 'Rain showers: Moderate' , 'assets/images/10.jpg'),
+  rainShowersVoilent(82, 'Rain showers: Violent' , 'assets/images/10-2.jpg'),
 
-  snowShowersSlight(85, 'Snow showers: Slight'),
-  snowShowersHeavy(86, 'Snow showers: Heavy'),
+  snowShowersSlight(85, 'Snow showers: Slight' , 'assets/images/11-0.jpg'),
+  snowShowersHeavy(86, 'Snow showers: Heavy' , 'assets/images/11.jpg'),
 
-  thunerstorm(95, 'Thunderstorm: Slight or moderate'),
-  thunderstormSlightHail(96, 'Thunderstorm with slight hail'),
-  thunderstormHeavyHail(99, 'Thunderstorm with heavy hail'),
+  thunerstorm(95, 'Thunderstorm: Slight or moderate' , 'assets/images/12-0.jpg'),
+  thunderstormSlightHail(96, 'Thunderstorm with slight hail' , 'assets/images/12.jpg'),
+  thunderstormHeavyHail(99, 'Thunderstorm with heavy hail' , 'assets/images/12-2.jpg'),
   ;
 
   final int value;
   final String description;
-  const WeatherCode(this.value, this.description);
+  final String imagePath;
+  const WeatherCode(this.value, this.description, this.imagePath);
 
   factory WeatherCode.fromInt(int value) {
     return WeatherCode.values.singleWhere((code) => code.value == value);
+  }
+
+  static String getImagePath(int value) {
+    return WeatherCode.fromInt(value).imagePath;
   }
 }

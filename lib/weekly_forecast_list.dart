@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:weather/server.dart';
 
 import 'models.dart';
 
@@ -22,7 +21,7 @@ class WeeklyForecastList extends StatelessWidget {
               final weatherCode = WeatherCode.fromInt(daily.weatherCode![index]);
               final tempMax = daily.temperature2MMax![index];
               final tempMin = daily.temperature2MMin![index];
-              final String weekday = weekdayAsString(date);
+              final weekday = weekdayAsString(date);
           return Card(
             child: Row(
               children: <Widget>[
@@ -42,8 +41,8 @@ class WeeklyForecastList extends StatelessWidget {
                             ],
                           ),
                         ),
-                        child: Image.network(
-                          Server.getDailyForecastByID(index).imageId,
+                        child: Image.asset(
+                          WeatherCode.getImagePath(daily.weatherCode![index]),
                           fit: BoxFit.cover,
                         ),
                       ),
@@ -83,7 +82,7 @@ class WeeklyForecastList extends StatelessWidget {
             ),
           );
         },
-        childCount: 7,
+        childCount: weeklyForecast.daily?.time?.length ?? 0,
       ),
     );
   }
