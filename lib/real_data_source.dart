@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'data_source.dart';
 import 'models.dart';
+import 'models/time_series.dart';
 
 class RealDataSource extends DataSource {
   final String apiUrl = "https://api.open-meteo.com/v1/forecast?latitude=55.4703&longitude=8.4519&daily=weather_code,temperature_2m_max,temperature_2m_min&timezone=Europe%2FBerlin";
@@ -17,5 +18,12 @@ class RealDataSource extends DataSource {
       // If that response was not OK, throw an error.
       throw Exception('Failed to load weather data');
     }
+  }
+
+  @override
+  Future<WeatherChartData> getChartData() async {
+    const apiUrl = "REPLACE THIS WITH THE URL YOU COPIED";
+    final response = await http.get(Uri.parse(apiUrl));
+    return WeatherChartData.fromJson(jsonDecode(response.body));
   }
 }
