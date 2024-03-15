@@ -33,21 +33,25 @@ class _WeeklyForecastScreenState extends State<WeeklyForecastScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: StreamBuilder(
-        stream: controller.stream,
-        builder: (context, snapshot) {
-          return CustomScrollView(
-            slivers: <Widget>[
-              WeatherSliverAppBar(onRefresh: loadForecast),
-              if (snapshot.hasData)
-                WeeklyForecastList(weeklyForecast: snapshot.data!)
-              else if (snapshot.hasError)
-                buildError(snapshot, context)
-              else
-                buildSpinner()
-            ],
-          );
-        },
+      body: RefreshIndicator(
+        onRefresh: loadForecast,
+        child: CustomScrollView(
+          slivers: <Widget>[
+            const WeatherSliverAppBar(),
+            StreamBuilder(
+              stream: controller.stream,
+              builder: (context, snapshot) {
+                if (snapshot.hasData) {
+                  return WeeklyForecastList(weeklyForecast: snapshot.data!);
+                } else if (snapshot.hasError) {
+                  return buildError(snapshot.error, context);
+                } else {
+                  return buildSpinner();
+                }
+              },
+            ),
+          ],
+        ),
       ),
     );
   }
