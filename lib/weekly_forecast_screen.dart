@@ -28,7 +28,6 @@ class _WeeklyForecastScreenState extends State<WeeklyForecastScreen> {
   Future<void> loadForecast() async {
     final future = context.read<DataSource>().getWeeklyForecast();
     controller.addStream(future.asStream());
-    print('updating ....');
     await future;
   }
   @override
