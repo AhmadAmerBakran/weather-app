@@ -20,12 +20,20 @@ class WeeklyForecastScreen extends StatefulWidget {
 
 class _WeeklyForecastScreenState extends State<WeeklyForecastScreen> {
   late Future<WeeklyForecastDto> _forecastFuture;
+  static const _loadingDelay = Duration(milliseconds: 500);
+  Timer? _loadingTimer;
 
   @override
   void initState() {
     super.initState();
     _forecastFuture = loadForecast();
   }
+  @override
+  void dispose() {
+    _loadingTimer?.cancel();
+    super.dispose();
+  }
+
 
   Future<WeeklyForecastDto> loadForecast() {
     return context.read<DataSource>().getWeeklyForecast();
@@ -104,42 +112,50 @@ class _WeeklyForecastScreenState extends State<WeeklyForecastScreen> {
               future: _forecastFuture,
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
-                  return const SliverFillRemaining(
+                  _startLoadingTimer();
+                  // Corrected the use of `const` here
+                  return SliverFillRemaining(
                     hasScrollBody: false,
-                    child: Center(child: CircularProgressIndicator()),
-                  );
-                } else if (snapshot.hasData) {
-                  return WeeklyForecastList(weeklyForecast: snapshot.data!);
-                } else if (snapshot.hasError) {
-                  return SliverToBoxAdapter(
-                    child: Padding(
-                      padding: const EdgeInsets.all(16.0),
-                      child: Center(
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: <Widget>[
-                            Text(
-                              'Failed to load data: ${snapshot.error}',
-                              style: TextStyle(color: Theme.of(context).colorScheme.error),
-                              textAlign: TextAlign.center,
-                            ),
-                            const SizedBox(height: 16),
-                            ElevatedButton(
-                              onPressed: _reloadForecast,
-                              child: const Text('Retry'),
-                            ),
-                          ],
-                        ),
-                      ),
+                    child: Center(
+                      // Removed the const from CircularProgressIndicator
+                      child: _loadingTimer == null ? SizedBox() : CircularProgressIndicator(),
                     ),
                   );
                 } else {
-                  return const SliverFillRemaining(
-                    hasScrollBody: false,
-                    child: Center(
-                      child: Text('No data available'),
-                    ),
-                  );
+                  _loadingTimer?.cancel();
+                  if (snapshot.hasData) {
+                    return WeeklyForecastList(weeklyForecast: snapshot.data!);
+                  } else if (snapshot.hasError) {
+                    return SliverToBoxAdapter(
+                      child: Padding(
+                        padding: const EdgeInsets.all(16.0),
+                        child: Center(
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: <Widget>[
+                              Text(
+                                'Failed to load data: ${snapshot.error}',
+                                style: TextStyle(color: Theme.of(context).colorScheme.error),
+                                textAlign: TextAlign.center,
+                              ),
+                              const SizedBox(height: 16),
+                              ElevatedButton(
+                                onPressed: _reloadForecast,
+                                child: const Text('Retry'),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    );
+                  } else {
+                    return const SliverFillRemaining(
+                      hasScrollBody: false,
+                      child: Center(
+                        child: Text('No data available'),
+                      ),
+                    );
+                  }
                 }
               },
             ),
@@ -147,5 +163,14 @@ class _WeeklyForecastScreenState extends State<WeeklyForecastScreen> {
         ),
       ),
     );
+  }
+
+  void _startLoadingTimer() {
+    _loadingTimer?.cancel();
+    _loadingTimer = Timer(_loadingDelay, () {
+      if (mounted) {
+        setState(() {});
+      }
+    });
   }
 }
