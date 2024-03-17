@@ -9,14 +9,10 @@ void main() {
   runApp(
     MultiProvider(
       providers: [
-        Provider<DataSource>(create: (context) => FakeDataSource()),
-        //Provider<DataSource>(create: (context) => RealDataSource())
+        //Provider<DataSource>(create: (context) => FakeDataSource()),
+        Provider<DataSource>(create: (context) => RealDataSource())
       ],
       child: const WeatherApp(),
     ),
   );
 }
-
-
-
-

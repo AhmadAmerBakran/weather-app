@@ -10,72 +10,76 @@ class WeeklyForecastList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final DateTime currentDate = DateTime.now();
     final TextTheme textTheme = Theme.of(context).textTheme;
 
     return SliverList(
       delegate: SliverChildBuilderDelegate(
             (context, index) {
-              final daily = weeklyForecast.daily!;
-              final date = DateTime.parse(daily.time![index]);
-              final weatherCode = WeatherCode.fromInt(daily.weatherCode![index]);
-              final tempMax = daily.temperature2MMax![index];
-              final tempMin = daily.temperature2MMin![index];
-              final weekday = weekdayAsString(date);
+          final daily = weeklyForecast.daily!;
+          final date = DateTime.parse(daily.time![index]);
+          final weatherCode = WeatherCode.fromInt(daily.weatherCode![index]);
+          final tempMax = daily.temperature2MMax![index];
+          final tempMin = daily.temperature2MMin![index];
+          final weekday = weekdayAsString(date);
+
           return Card(
             child: Row(
               children: <Widget>[
                 SizedBox(
-                  height: 200.0,
-                  width: 200.0,
+                  height: 100.0,
+                  width: 125.0,
                   child: Stack(
                     fit: StackFit.expand,
                     children: <Widget>[
-                      DecoratedBox(
-                        position: DecorationPosition.foreground,
-                        decoration: BoxDecoration(
-                          gradient: RadialGradient(
-                            colors: <Color>[
-                              Colors.grey[800]!,
-                              Colors.transparent
-                            ],
-                          ),
-                        ),
-                        child: Image.asset(
-                          WeatherCode.getImagePath(daily.weatherCode![index]),
-                          fit: BoxFit.cover,
-                        ),
+                      Image.asset(
+                        WeatherCode.getImagePath(daily.weatherCode![index]),
+                        fit: BoxFit.cover,
                       ),
                       Center(
+                        child: FittedBox(
+                          fit: BoxFit.fitWidth,
+                          child: Padding(
+                            padding: const EdgeInsets.all(4.0),
+                            child: Text(
+                              weekday,
+                              style: textTheme.headlineMedium?.copyWith(color: Colors.white),
+                            ),
+                          ),
+                        ),
+                      ),
+                      Align(
+                        alignment: Alignment.bottomCenter,
                         child: Text(
-                          date.day.toString(),
-                          style: textTheme.displayMedium,
+                          '${date.day}',
+                          style: textTheme.titleMedium?.copyWith(color: Colors.white),
                         ),
                       ),
                     ],
                   ),
                 ),
                 Expanded(
-                  child: Padding(
-                    padding: const EdgeInsets.all(20.0),
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(vertical: 16.0, horizontal: 10.0),
+                    height: 100.0,
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.center,
                       children: <Widget>[
-                        Text(
-                          weekday,
-                          style: textTheme.headlineMedium,
+                        Expanded(
+                          child: Text(
+                            weatherCode.description,
+                            style: textTheme.bodyMedium,
+                            overflow: TextOverflow.fade,
+                            softWrap: false,
+                          ),
                         ),
-                        const SizedBox(height: 10.0),
-                        Text(weatherCode.description),
+                        SizedBox(height: 4.0),
+                        Text(
+                          '$tempMax° | $tempMin°C',
+                          style: textTheme.bodyMedium,
+                        ),
                       ],
                     ),
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: Text(
-                    '$tempMax | $tempMin °C',
-                    style: textTheme.titleMedium,
                   ),
                 ),
               ],

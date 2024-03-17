@@ -39,6 +39,8 @@ dependencies:
   http: ^1.2.1
   community_charts_flutter: ^1.0.2
   intl: ^0.18.1
+  location: ^5.0.3
+  app_settings: ^5.1.1
 
 dev_dependencies:
   flutter_test:
