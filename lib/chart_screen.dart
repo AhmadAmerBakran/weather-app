@@ -64,7 +64,8 @@ class _ChartScreenState extends State<ChartScreen> {
       builder: (BuildContext context) {
         return AlertDialog(
           title: const Text('Location Permission Needed'),
-          content: const Text('This app needs location access to display the chart data.'),
+          content: const Text(
+              'This app needs location access to display the chart data.'),
           actions: <Widget>[
             TextButton(
               child: const Text('Settings'),
@@ -89,18 +90,15 @@ class _ChartScreenState extends State<ChartScreen> {
       Colors.green,
       Colors.purple,
     ];
-
-
     return Scaffold(
       body: SafeArea(
         child: FutureBuilder<WeatherChartData>(
           future: _chartDataFuture,
-          builder: (BuildContext context, AsyncSnapshot<WeatherChartData> snapshot) {
+          builder: (BuildContext context,
+              AsyncSnapshot<WeatherChartData> snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return const Center(child: CircularProgressIndicator());
-            }
-
-            if (snapshot.hasError) {
+            } else if (snapshot.hasError) {
               return Center(
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -117,9 +115,7 @@ class _ChartScreenState extends State<ChartScreen> {
                   ],
                 ),
               );
-            }
-
-            if (!snapshot.hasData) {
+            } else if (!snapshot.hasData) {
               return const Center(child: Text('No chart data available'));
             }
 
@@ -130,14 +126,19 @@ class _ChartScreenState extends State<ChartScreen> {
               }
             }
 
-            final seriesList = variables.asMap().entries.map((entry) {
+            final seriesList = variables
+                .asMap()
+                .entries
+                .map((entry) {
               return charts.Series<TimeSeriesDatum, DateTime>(
                 id: '${entry.value.name}',
                 colorFn: (_, __) =>
-                    charts.ColorUtil.fromDartColor(seriesColors[entry.key % seriesColors.length]),
+                    charts.ColorUtil.fromDartColor(
+                        seriesColors[entry.key % seriesColors.length]),
                 domainFn: (TimeSeriesDatum datum, _) => datum.domain,
                 measureFn: (TimeSeriesDatum datum, _) => datum.measure,
-                data: _seriesVisibility[entry.value.name] == true ? entry.value.values : [],
+                data: _seriesVisibility[entry.value.name] == true ? entry.value
+                    .values : [],
               );
             }).toList();
 
@@ -145,19 +146,34 @@ class _ChartScreenState extends State<ChartScreen> {
               child: Column(
                 children: [
                   Container(
-                    height: MediaQuery.of(context).size.height * 0.6,
+                    height: MediaQuery
+                        .of(context)
+                        .size
+                        .height * 0.6,
                     padding: const EdgeInsets.all(8.0),
                     child: charts.TimeSeriesChart(
                       seriesList,
                       animate: true,
                       dateTimeFactory: const charts.LocalDateTimeFactory(),
                       domainAxis: charts.DateTimeAxisSpec(
+                        tickFormatterSpec: charts.AutoDateTimeTickFormatterSpec(
+                          day: charts.TimeFormatterSpec(
+                            format: 'E',
+                            transitionFormat: 'E',
+                          ),
+                        ),
                         renderSpec: charts.SmallTickRendererSpec(
                           labelStyle: charts.TextStyleSpec(color: axisColor),
                           lineStyle: charts.LineStyleSpec(color: axisColor),
                         ),
                       ),
                       primaryMeasureAxis: charts.NumericAxisSpec(
+                        tickProviderSpec: charts.BasicNumericTickProviderSpec(
+                          desiredTickCount: 15,
+                          dataIsInWholeNumbers: false,
+                          zeroBound: false,
+                        ),
+                        // Configure the render spec for labels and gridlines
                         renderSpec: charts.GridlineRendererSpec(
                           labelStyle: charts.TextStyleSpec(color: axisColor),
                           lineStyle: charts.LineStyleSpec(color: axisColor),
@@ -165,25 +181,31 @@ class _ChartScreenState extends State<ChartScreen> {
                       ),
                     ),
                   ),
-                  Wrap(
-                    alignment: WrapAlignment.center,
-                    spacing: 8.0,
-                    children: variables.asMap().entries.map((entry) {
-                      final variableName = entry.value.name;
-                      final color = seriesColors[entry.key % seriesColors.length];
-                      return FilterChip(
-                        label: Text(variableName),
-                        selected: _seriesVisibility[variableName]!,
-                        onSelected: (bool selected) {
-                          setState(() {
-                            _seriesVisibility[variableName] = selected;
-                          });
-                        },
-                        selectedColor: color,
-                        checkmarkColor: Colors.white,
-                        backgroundColor: color.withOpacity(0.5),
-                      );
-                    }).toList(),
+                  SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: variables.map((variable) {
+                        final variableName = variable.name;
+                        final color = seriesColors[variables.indexOf(variable) %
+                            seriesColors.length];
+                        return Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 4.0),
+                          child: ChoiceChip(
+                            label: Text(variableName),
+                            selected: _seriesVisibility[variableName]!,
+                            onSelected: (bool selected) {
+                              setState(() {
+                                _seriesVisibility[variableName] = selected;
+                              });
+                            },
+                            selectedColor: color,
+                            labelStyle: TextStyle(color: Colors.white),
+                            backgroundColor: color.withOpacity(0.5),
+                          ),
+                        );
+                      }).toList(),
+                    ),
                   ),
                 ],
               ),

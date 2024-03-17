@@ -113,11 +113,9 @@ class _WeeklyForecastScreenState extends State<WeeklyForecastScreen> {
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
                   _startLoadingTimer();
-                  // Corrected the use of `const` here
                   return SliverFillRemaining(
                     hasScrollBody: false,
                     child: Center(
-                      // Removed the const from CircularProgressIndicator
                       child: _loadingTimer == null ? SizedBox() : CircularProgressIndicator(),
                     ),
                   );
@@ -134,7 +132,7 @@ class _WeeklyForecastScreenState extends State<WeeklyForecastScreen> {
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: <Widget>[
                               Text(
-                                'Failed to load data: ${snapshot.error}',
+                                'Failed to load data: please allow the app to use your location',
                                 style: TextStyle(color: Theme.of(context).colorScheme.error),
                                 textAlign: TextAlign.center,
                               ),
